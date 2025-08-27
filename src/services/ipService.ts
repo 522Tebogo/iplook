@@ -1,6 +1,59 @@
 import axios from 'axios';
 import { IPInfo } from '../types';
 
+// 获取IP信息
+export const getIPInfo = async (): Promise<IPInfo> => {
+  try {
+    // 使用 ipapi.co 服务获取IP信息
+    const response = await axios.get('https://ipapi.co/json/');
+    
+    return {
+      ip: response.data.ip,
+      country: response.data.country_name,
+      countryCode: response.data.country_code || '未知',
+      region: response.data.region,
+      city: response.data.city,
+      isp: response.data.org,
+      timezone: response.data.timezone,
+      latitude: response.data.latitude,
+      longitude: response.data.longitude
+    };
+  } catch (error) {
+    console.error('获取IP信息失败:', error);
+    // 返回默认值
+    return {
+      ip: '未知',
+      country: '未知',
+      countryCode: '未知',
+      region: '未知',
+      city: '未知',
+      isp: '未知',
+      timezone: '未知',
+      latitude: 0,
+      longitude: 0
+    };
+  }
+};
+
+// 模拟获取IP信息（用于开发环境）
+export const getMockIPInfo = async (): Promise<IPInfo> => {
+  // 模拟网络延迟
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // 返回模拟数据
+  return {
+    ip: '111.111.111.111',
+    country: '中国',
+    countryCode: 'CN',
+    region: '北京市',
+    city: '北京市',
+    isp: '中国联通',
+    timezone: 'Asia/Shanghai',
+    latitude: 39.9042,
+    longitude: 116.4074
+  };
+};
+
 export class IPService {
   private static readonly IP_API_URL = 'http://ip-api.com/json';
 

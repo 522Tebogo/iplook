@@ -22,3 +22,16 @@ export interface TCPingResult {
   serviceName?: string;
   timestamp?: string;
 }
+
+// IP信息类型
+export interface IPInfo {
+  ip: string;
+  country: string;
+  countryCode: string;
+  region: string;
+  city: string;
+  isp: string;
+  timezone: string;
+  latitude: number;
+  longitude: number;
+}
