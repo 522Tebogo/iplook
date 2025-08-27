@@ -9,7 +9,7 @@ export const Header: React.FC = () => {
           <div className="flex items-center space-x-3">
             <Globe className="h-8 w-8 text-blue-600" />
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              IP检测工具
+              IPLook
             </h1>
           </div>
           <nav className="hidden md:flex space-x-8">
