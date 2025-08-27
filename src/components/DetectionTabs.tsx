@@ -84,12 +84,12 @@ export const DetectionTabs: React.FC<DetectionTabsProps> = ({ onError }) => {
         </nav>
       </div>
       <div className="p-4">
-        {activeTab === 'ping' && <PingDetection onError={onError} />}
-        {activeTab === 'whoer' && <WhoerDetection onError={onError} />}
-        {activeTab === 'dns' && <DnsLeakDetection onError={onError} />}
-        {activeTab === 'purity' && <PurityDetection onError={onError} />}
-        {activeTab === 'tcping' && <TcpingDetection onError={onError} />}
-        {activeTab === 'ans' && <AnsDetection onError={onError} />}
+        {activeTab === 'ping' && <PingDetection ip="8.8.8.8" />}
+        {activeTab === 'whoer' && <WhoerDetection ip="8.8.8.8" />}
+        {activeTab === 'dns' && <DnsLeakDetection ip="8.8.8.8" />}
+        {activeTab === 'purity' && <PurityDetection ip="8.8.8.8" />}
+        {activeTab === 'tcping' && <TcpingDetection ip="8.8.8.8" />}
+        {activeTab === 'ans' && <AnsDetection ip="8.8.8.8" />}
       </div>
     </div>
   );
