@@ -95,6 +95,7 @@ export class IPService {
       return {
         ip: data.query,
         country: this.addCountryEmoji(data.country || '未知', data.countryCode || 'UN'),
+        countryCode: data.countryCode || '未知',
         region: data.regionName || '未知',
         city: data.city || '未知',
         isp: data.isp || '未知',
@@ -175,6 +176,7 @@ export class IPService {
     return {
       ip,
       country: isChinaIP ? '🇨🇳 中国' : '🇺🇸 美国',
+      countryCode: isChinaIP ? 'CN' : 'US',
       region: isChinaIP ? '北京市' : 'California',
       city: isChinaIP ? '北京' : 'Los Angeles',
       isp: isChinaIP ? '中国电信' : 'AT&T',
