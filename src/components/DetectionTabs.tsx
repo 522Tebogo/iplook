@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PingDetection } from './detections/PingDetection';
 import { WhoerDetection } from './detections/WhoerDetection';
 import { DnsLeakDetection } from './detections/DnsLeakDetection';
 import { PurityDetection } from './detections/PurityDetection';
 import { TcpingDetection } from './detections/TcpingDetection';
 import { AnsDetection } from './detections/AnsDetection';
+import { IPService } from '../services/ipService';
 
 interface DetectionTabsProps {
   onError?: (errorMsg: string) => void;
@@ -12,10 +13,44 @@ interface DetectionTabsProps {
 
 export const DetectionTabs: React.FC<DetectionTabsProps> = ({ onError }) => {
   const [activeTab, setActiveTab] = useState('ping');
+  const [currentIP, setCurrentIP] = useState<string>('127.0.0.1');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchIP = async () => {
+      try {
+        setLoading(true);
+        const { ip } = await IPService.getCurrentIP();
+        setCurrentIP(ip);
+      } catch (error) {
+        console.error('获取IP地址失败:', error);
+        // 如果获取失败，使用默认IP
+        setCurrentIP('127.0.0.1');
+        if (onError) {
+          onError('无法获取真实IP地址，将使用默认IP进行检测');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchIP();
+  }, [onError]);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
+
+  if (loading) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <div className="flex justify-center items-center h-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <span className="ml-3 text-gray-700 dark:text-gray-300">正在获取IP地址...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
@@ -84,12 +119,12 @@ export const DetectionTabs: React.FC<DetectionTabsProps> = ({ onError }) => {
         </nav>
       </div>
       <div className="p-4">
-        {activeTab === 'ping' && <PingDetection ip="8.8.8.8" />}
-        {activeTab === 'whoer' && <WhoerDetection ip="8.8.8.8" />}
-        {activeTab === 'dns' && <DnsLeakDetection ip="8.8.8.8" />}
-        {activeTab === 'purity' && <PurityDetection ip="8.8.8.8" />}
-        {activeTab === 'tcping' && <TcpingDetection ip="8.8.8.8" />}
-        {activeTab === 'ans' && <AnsDetection ip="8.8.8.8" />}
+        {activeTab === 'ping' && <PingDetection ip={currentIP} />}
+        {activeTab === 'whoer' && <WhoerDetection ip={currentIP} />}
+        {activeTab === 'dns' && <DnsLeakDetection ip={currentIP} />}
+        {activeTab === 'purity' && <PurityDetection ip={currentIP} />}
+        {activeTab === 'tcping' && <TcpingDetection ip={currentIP} />}
+        {activeTab === 'ans' && <AnsDetection ip={currentIP} />}
       </div>
     </div>
   );

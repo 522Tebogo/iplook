@@ -1,0 +1,60 @@
+# IPLook 项目环境变量配置
+# 请将此文件重命名为 .env.local 并根据您的实际API密钥进行配置
+
+# ========================================
+# 威胁情报 API (用于IP纯净度检测)
+# ========================================
+
+# AbuseIPDB API - 免费，每天1000次请求
+# 注册地址: https://www.abuseipdb.com/
+# 功能: IP威胁情报检测
+VITE_ABUSEIPDB_API_KEY=your_abuseipdb_api_key_here
+
+# VirusTotal API - 免费，每天500次请求  
+# 注册地址: https://www.virustotal.com/
+# 功能: 多引擎恶意软件检测
+VITE_VIRUSTOTAL_API_KEY=your_virustotal_api_key_here
+
+# ========================================
+# 隐私检测 API (用于Whoer隐私检测)
+# ========================================
+
+# Whoer API - 付费服务
+# 注册地址: https://whoer.net/
+# 功能: 专业的隐私检测服务
+VITE_WHOER_API_KEY=your_whoer_api_key_here
+
+# IPGeolocation API - 付费服务
+# 注册地址: https://ipgeolocation.io/
+# 功能: 高精度的地理位置和代理检测
+VITE_IPGEOLOCATION_API_KEY=your_ipgeolocation_api_key_here
+
+# IPInfo API - 免费版本有限制，付费版本功能更全
+# 注册地址: https://ipinfo.io/
+# 功能: IP地理位置和代理检测
+VITE_IPINFO_API_KEY=your_ipinfo_api_key_here
+
+# IPStack API - 付费服务
+# 注册地址: https://ipstack.com/
+# 功能: 提供安全威胁检测功能
+VITE_IPSTACK_API_KEY=your_ipstack_api_key_here
+
+# ========================================
+# 开发环境配置
+# ========================================
+
+# 调试模式 (开发环境)
+VITE_DEBUG_MODE=true
+
+# ========================================
+# 使用说明
+# ========================================
+# 
+# 1. 将上面的 "your_xxx_api_key_here" 替换为您的实际API密钥
+# 2. 如果某个API密钥为空，系统会自动使用免费API或本地检测
+# 3. 免费API推荐:
+#    - AbuseIPDB: https://www.abuseipdb.com/ (每天1000次免费)
+#    - IPInfo: https://ipinfo.io/ (免费版本有限制)
+# 4. DNS泄露检测无需任何API密钥，完全免费
+# 5. 保存文件后重启开发服务器: npm run dev
+

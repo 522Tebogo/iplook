@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DnsLeakService, DnsLeakResult } from '../../services/dnsLeakService';
-import { AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, XCircle, Info } from 'lucide-react';
 
 interface DnsLeakDetectionProps {
   ip: string;
@@ -72,9 +72,7 @@ export const DnsLeakDetection: React.FC<DnsLeakDetectionProps> = ({ ip }) => {
               )}
             </div>
             <p className="mt-2 text-gray-700 dark:text-gray-300">
-              {result.isLeaking 
-                ? '您的DNS查询可能正在泄露到外部服务器，建议使用VPN或安全DNS服务。' 
-                : '您的DNS查询看起来是安全的，没有发现泄露风险。'}
+              {result.explanation}
             </p>
           </div>
 
@@ -108,7 +106,55 @@ export const DnsLeakDetection: React.FC<DnsLeakDetectionProps> = ({ ip }) => {
                   <span className="text-gray-700 dark:text-gray-300">检测时间:</span>
                   <span className="font-medium text-gray-900 dark:text-white">{result.timestamp}</span>
                 </div>
+                {result.dnsProvider && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 dark:text-gray-300">DNS提供商:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{result.dnsProvider}</span>
+                  </div>
+                )}
+                {result.responseTime && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 dark:text-gray-300">响应时间:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{result.responseTime}ms</span>
+                  </div>
+                )}
+                {result.serverLocation && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 dark:text-gray-300">服务器位置:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{result.serverLocation}</span>
+                  </div>
+                )}
               </div>
+            </div>
+          </div>
+
+          {/* 添加详细解释信息 */}
+          <div className="card">
+            <div className="flex items-center mb-3">
+              <Info className="h-5 w-5 text-blue-500 mr-2" />
+              <h5 className="font-medium text-gray-900 dark:text-white">详细说明</h5>
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+              <p>• DNS泄露是指您的DNS查询请求被发送到ISP的DNS服务器，而不是您配置的DNS服务器</p>
+              <p>• 这可能导致您的网络活动被ISP监控，并可能泄露您的位置信息</p>
+              <p>• 使用公共DNS服务器（如8.8.8.8、1.1.1.1）通常更安全</p>
+              <p>• 如果检测到泄露，建议使用VPN或配置安全的DNS服务器</p>
+            </div>
+          </div>
+
+          {/* 数据源信息 */}
+          <div className="card">
+            <div className="flex items-center mb-3">
+              <Info className="h-5 w-5 text-green-500 mr-2" />
+              <h5 className="font-medium text-gray-900 dark:text-white">数据源信息</h5>
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+              <p>• DNS检测: Google DNS API + 本地检测</p>
+              <p>• 公共DNS数据库: 实时更新的公共DNS服务器列表</p>
+              <p>• 缓存时间: 10分钟</p>
+              <p className="text-blue-600 dark:text-blue-400">
+                💡 提示: 检测结果结合了外部API数据和本地分析，提供更准确的DNS泄露评估
+              </p>
             </div>
           </div>
         </div>

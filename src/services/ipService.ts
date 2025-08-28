@@ -55,21 +55,74 @@ export const getMockIPInfo = async (): Promise<IPInfo> => {
 };
 
 export class IPService {
-  private static readonly IP_API_URL = 'http://ip-api.com/json';
+  private static readonly IP_APIS = [
+    'https://api.ipify.org?format=json',
+    'https://api.myip.com',
+    'https://ipapi.co/json/',
+    'https://httpbin.org/ip',
+    'https://api.ip.sb/ip'
+  ];
 
   /**
    * 获取当前IP地址
    */
   static async getCurrentIP(): Promise<{ ip: string }> {
-    try {
-      // 使用ipify服务获取当前IP地址
-      const response = await axios.get('https://api.ipify.org?format=json', { timeout: 10000 });
-      return { ip: response.data.ip };
-    } catch (error) {
-      console.error('获取当前IP失败:', error);
-      // 返回本地IP地址用于测试
-      return { ip: '127.0.0.1' };
+    for (const apiUrl of this.IP_APIS) {
+      try {
+        const response = await axios.get(apiUrl, { 
+          timeout: 5000,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        let ip: string;
+        
+        // 根据不同API的响应格式提取IP
+        if (apiUrl.includes('ipify')) {
+          ip = response.data.ip;
+        } else if (apiUrl.includes('myip')) {
+          ip = response.data.ip;
+        } else if (apiUrl.includes('ipapi')) {
+          ip = response.data.ip;
+        } else if (apiUrl.includes('httpbin')) {
+          ip = response.data.origin;
+        } else if (apiUrl.includes('ip.sb')) {
+          ip = response.data.trim();
+        } else {
+          ip = response.data.ip || response.data;
+        }
+        
+        // 验证IP格式
+        if (this.isValidIP(ip)) {
+          return { ip };
+        }
+      } catch (error) {
+        console.warn(`API ${apiUrl} 获取IP失败:`, error);
+        continue;
+      }
     }
+    
+    console.error('所有IP API都失败了');
+    throw new Error('无法获取当前IP地址');
+  }
+
+  /**
+   * 验证IP地址格式
+   */
+  private static isValidIP(ip: string): boolean {
+    if (!ip || typeof ip !== 'string') return false;
+    
+    // 移除可能的端口号
+    ip = ip.split(':')[0];
+    
+    // IPv4格式验证
+    const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    if (ipv4Regex.test(ip)) return true;
+    
+    // IPv6格式验证（简化版）
+    const ipv6Regex = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+    return ipv6Regex.test(ip);
   }
 
   /**
@@ -79,7 +132,7 @@ export class IPService {
   static async getIPInfo(ip: string): Promise<IPInfo> {
     try {
       // 优先使用对国内用户友好的ip-api.com服务
-      const response = await axios.get(`${this.IP_API_URL}/${ip}`, { 
+      const response = await axios.get(`http://ip-api.com/json/${ip}`, { 
         timeout: 8000,
         headers: {
           'Accept': 'application/json'

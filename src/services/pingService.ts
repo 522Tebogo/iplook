@@ -1,6 +1,64 @@
 import { PingResult } from '../types';
 
-// 模拟Ping检测
+// 使用fetch API进行真实的ping检测
+export const performPingDetection = async (host: string, count: number = 4): Promise<PingResult> => {
+  const times: number[] = [];
+  let received = 0;
+  let lost = 0;
+  
+  // 确保host有协议前缀
+  const url = host.startsWith('http') ? host : `https://${host}`;
+  
+  for (let i = 0; i < count; i++) {
+    try {
+      const startTime = performance.now();
+      
+      // 使用fetch进行ping检测
+      const response = await fetch(url, {
+        method: 'HEAD', // 只获取头部信息，减少数据传输
+        mode: 'no-cors', // 避免CORS问题
+        cache: 'no-cache', // 避免缓存
+        signal: AbortSignal.timeout(5000) // 5秒超时
+      });
+      
+      const endTime = performance.now();
+      const pingTime = endTime - startTime;
+      
+      times.push(pingTime);
+      received++;
+    } catch (error) {
+      console.warn(`Ping attempt ${i + 1} failed:`, error);
+      lost++;
+      times.push(0); // 失败时记录0
+    }
+    
+    // 在每次ping之间添加短暂延迟
+    if (i < count - 1) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+  }
+  
+  const validTimes = times.filter(time => time > 0);
+  const minTime = validTimes.length > 0 ? Math.min(...validTimes) : 0;
+  const maxTime = validTimes.length > 0 ? Math.max(...validTimes) : 0;
+  const avgTime = validTimes.length > 0 ? validTimes.reduce((a, b) => a + b, 0) / validTimes.length : 0;
+  const lossPercentage = (lost / count) * 100;
+  
+  return {
+    host,
+    packets: count,
+    received,
+    lost,
+    lossPercentage,
+    minTime,
+    maxTime,
+    avgTime,
+    times: validTimes,
+    timestamp: new Date().toISOString()
+  };
+};
+
+// 备用模拟Ping检测（当真实检测失败时使用）
 export const performMockPingDetection = async (host: string, count: number = 4): Promise<PingResult> => {
   // 模拟网络延迟
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -27,11 +85,4 @@ export const performMockPingDetection = async (host: string, count: number = 4):
     times,
     timestamp: new Date().toISOString()
   };
-};
-
-// 执行实际的Ping检测（在浏览器环境中受限）
-export const performPingDetection = async (host: string, count: number = 4): Promise<PingResult> => {
-  // 在浏览器中无法直接执行ping命令，这里提供一个模拟实现
-  console.warn('浏览器环境中无法执行真实的ping命令，返回模拟数据');
-  return performMockPingDetection(host, count);
 };

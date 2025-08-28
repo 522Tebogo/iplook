@@ -83,11 +83,7 @@ export const PurityDetection: React.FC<PurityDetectionProps> = ({ ip }) => {
               )}
             </div>
             <p className="mt-2 text-gray-700 dark:text-gray-300">
-              {result.threatLevel === 'low' 
-                ? '您的IP地址看起来是干净的，没有发现已知的威胁或滥用记录。' 
-                : result.threatLevel === 'medium' 
-                  ? '您的IP地址存在一些风险指标，建议保持警惕。' 
-                  : '您的IP地址存在多个风险指标，可能被用于恶意活动。'}
+              {result.explanation}
             </p>
           </div>
 
@@ -176,6 +172,38 @@ export const PurityDetection: React.FC<PurityDetectionProps> = ({ ip }) => {
               </div>
             </div>
           )}
+
+          {/* 添加详细解释信息 */}
+          <div className="card">
+            <div className="flex items-center mb-3">
+              <Info className="h-5 w-5 text-blue-500 mr-2" />
+              <h5 className="font-medium text-gray-900 dark:text-white">详细说明</h5>
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+              <p>• IP纯净度检测基于IP地址特征、已知恶意IP段、黑名单数据库等因素</p>
+              <p>• 内网IP地址通常被认为是安全的</p>
+              <p>• Tor出口节点、数据中心IP等可能被标记为高风险</p>
+              <p>• 建议定期检查IP纯净度，特别是使用动态IP的用户</p>
+              <p>• 检测结果包含实时威胁情报数据，提供更准确的风险评估</p>
+            </div>
+          </div>
+
+          {/* 数据源信息 */}
+          <div className="card">
+            <div className="flex items-center mb-3">
+              <Info className="h-5 w-5 text-green-500 mr-2" />
+              <h5 className="font-medium text-gray-900 dark:text-white">数据源信息</h5>
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+              <p>• 地理位置数据: ipapi.co (免费API)</p>
+              <p>• 威胁情报: AbuseIPDB (模拟数据)</p>
+              <p>• 本地检测: 静态IP段 + 特征分析</p>
+              <p>• 缓存时间: 5分钟</p>
+              <p className="text-blue-600 dark:text-blue-400">
+                💡 提示: 配置真实的API密钥可获得更准确的检测结果
+              </p>
+            </div>
+          </div>
         </div>
       )}
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { WhoerService, WhoerResult } from '../../services/whoerService';
-import { User, CheckCircle, XCircle, AlertTriangle, MapPin } from 'lucide-react';
+import { User, CheckCircle, XCircle, AlertTriangle, MapPin, Info } from 'lucide-react';
 
 interface WhoerDetectionProps {
   ip: string;
@@ -83,11 +83,7 @@ export const WhoerDetection: React.FC<WhoerDetectionProps> = ({ ip }) => {
               )}
             </div>
             <p className="mt-2 text-gray-700 dark:text-gray-300">
-              您的隐私分数是 {result.privacyScore}/100。{result.privacyScore > 80 
-                ? '您的在线隐私保护得很好，很难被追踪。' 
-                : result.privacyScore > 50 
-                  ? '您的在线隐私保护一般，建议采取额外措施。' 
-                  : '您的在线隐私保护较差，容易被追踪和识别。'}
+              {result.explanation}
             </p>
           </div>
 
@@ -111,6 +107,30 @@ export const WhoerDetection: React.FC<WhoerDetectionProps> = ({ ip }) => {
                   <span className="text-gray-700 dark:text-gray-300">时区:</span>
                   <span className="font-medium text-gray-900 dark:text-white">{result.timezone}</span>
                 </div>
+                {result.countryCode && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 dark:text-gray-300">国家代码:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{result.countryCode}</span>
+                  </div>
+                )}
+                {result.city && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 dark:text-gray-300">城市:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{result.city}</span>
+                  </div>
+                )}
+                {result.region && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 dark:text-gray-300">地区:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{result.region}</span>
+                  </div>
+                )}
+                {result.dataSource && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-700 dark:text-gray-300">数据源:</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{result.dataSource}</span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -165,6 +185,37 @@ export const WhoerDetection: React.FC<WhoerDetectionProps> = ({ ip }) => {
                   {result.httpHeaders}
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* 添加详细解释信息 */}
+          <div className="card">
+            <div className="flex items-center mb-3">
+              <Info className="h-5 w-5 text-blue-500 mr-2" />
+              <h5 className="font-medium text-gray-900 dark:text-white">详细说明</h5>
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+              <p>• 隐私分数基于IP地址特征、代理/VPN使用情况等因素综合评估</p>
+              <p>• 使用VPN、代理或Tor网络可以提高隐私保护分数</p>
+              <p>• 内网IP地址通常具有较高的隐私保护分数</p>
+              <p>• 浏览器指纹可能被用于追踪用户，建议使用隐私保护工具</p>
+            </div>
+          </div>
+
+          {/* 数据源信息 */}
+          <div className="card">
+            <div className="flex items-center mb-3">
+              <Info className="h-5 w-5 text-green-500 mr-2" />
+              <h5 className="font-medium text-gray-900 dark:text-white">数据源信息</h5>
+            </div>
+            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+              <p>• 地理位置数据: ipapi.co (免费API)</p>
+              <p>• VPN/代理检测: 本地IP段数据库 + 特征分析</p>
+              <p>• Tor节点检测: 实时更新的Tor出口节点列表</p>
+              <p>• 缓存时间: 5分钟</p>
+              <p className="text-blue-600 dark:text-blue-400">
+                💡 提示: 检测结果结合了外部地理位置API和本地威胁情报分析，提供更准确的隐私评估
+              </p>
             </div>
           </div>
         </div>

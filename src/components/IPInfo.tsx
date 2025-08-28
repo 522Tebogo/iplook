@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Building, Clock } from 'lucide-react';
 import type { IPInfo } from '../types';
-import { getIPInfo } from '../services/ipService';
+import { IPService } from '../services/ipService';
 
 const IPInfo: React.FC = () => {
   const [ipInfo, setIpInfo] = useState<IPInfo | null>(null);
@@ -11,10 +11,20 @@ const IPInfo: React.FC = () => {
     const fetchIPInfo = async () => {
       try {
         setLoading(true);
-        const info = await getIPInfo();
+        // 首先获取当前IP地址
+        const { ip } = await IPService.getCurrentIP();
+        // 然后获取IP的详细信息
+        const info = await IPService.getIPInfo(ip);
         setIpInfo(info);
       } catch (error) {
         console.error('获取IP信息失败:', error);
+        // 如果获取失败，尝试使用备用方法
+        try {
+          const info = await IPService.getIPInfo('127.0.0.1');
+          setIpInfo(info);
+        } catch (fallbackError) {
+          console.error('备用IP获取也失败:', fallbackError);
+        }
       } finally {
         setLoading(false);
       }

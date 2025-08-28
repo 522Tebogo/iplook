@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Activity, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 import { PingResult } from '../../types';
-import { performMockPingDetection } from '../../services/pingService';
+import { performPingDetection } from '../../services/pingService';
 
 interface PingDetectionProps {
   ip: string;
@@ -23,8 +23,8 @@ export const PingDetection: React.FC<PingDetectionProps> = ({ ip }) => {
     setError(null);
     
     try {
-      // 使用模拟检测服务
-      const pingResult = await performMockPingDetection(targetHost);
+      // 使用真实检测服务
+      const pingResult = await performPingDetection(targetHost);
       setResult(pingResult);
     } catch (err) {
       setError('Ping检测失败');
