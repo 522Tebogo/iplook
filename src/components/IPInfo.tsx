@@ -6,7 +6,6 @@ import { IPService } from '../services/ipService';
 const IPInfo: React.FC = () => {
   const [ipInfo, setIpInfo] = useState<IPInfo | null>(null);
   const [loading, setLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState<string>('');
 
   useEffect(() => {
     const fetchIPInfo = async () => {
@@ -15,22 +14,72 @@ const IPInfo: React.FC = () => {
         let ip = '';
         let source = '';
         
-        // 直接通过 ipapi.com 获取 IP 和信息（绕过可能的代理问题）
+        // 直接通过 ipapi.co 获取 IP 和信息（绕过可能的代理问题）
         try {
-          const response = await fetch('https://ipapi.co/json/', { // ✅ 使用 ipapi.co 支持 CORS
+          const response = await fetch('https://ipapi.co/json/', {
             method: 'GET',
             headers: {
               'Accept': 'application/json'
             }
           });
-
+          
           if (response.ok) {
             const data = await response.json();
+            // 为国家名称添加emoji
+            const countryEmojis: { [key: string]: string } = {
+              'CN': '🇨🇳',
+              'US': '🇺🇸',
+              'JP': '🇯🇵',
+              'KR': '🇰🇷',
+              'GB': '🇬🇧',
+              'DE': '🇩🇪',
+              'FR': '🇫🇷',
+              'RU': '🇷🇺',
+              'IN': '🇮🇳',
+              'CA': '🇨🇦',
+              'AU': '🇦🇺',
+              'BR': '🇧🇷',
+              'IT': '🇮🇹',
+              'SG': '🇸🇬',
+              'MY': '🇲🇾',
+              'TH': '🇹🇭',
+              'VN': '🇻🇳',
+              'PH': '🇵🇭',
+              'ID': '🇮🇩',
+              'TR': '🇹🇷',
+              'MX': '🇲🇽',
+              'AR': '🇦🇷',
+              'CL': '🇨🇱',
+              'ZA': '🇿🇦',
+              'EG': '🇪🇬',
+              'NG': '🇳🇬',
+              'BE': '🇧🇪',
+              'NL': '🇳🇱',
+              'SE': '🇸🇪',
+              'NO': '🇳🇴',
+              'DK': '🇩🇰',
+              'FI': '🇫🇮',
+              'PL': '🇵🇱',
+              'CZ': '🇨🇿',
+              'HU': '🇭🇺',
+              'AT': '🇦🇹',
+              'CH': '🇨🇭',
+              'PT': '🇵🇹',
+              'IE': '🇮🇪',
+              'IL': '🇮🇱',
+              'SA': '🇸🇦',
+              'AE': '🇦🇪',
+              'HK': '🇭🇰',
+              'TW': '🇹🇼'
+            };
+            
+            const emoji = countryEmojis[data.country_code] || '🏳';
+            
             setIpInfo({
               ip: data.ip,
-              country: data.country_name || '未知',
+              country: `${emoji} ${data.country_name || '未知'}`,
               countryCode: data.country_code || '未知',
-              region: data.region_name || '未知',
+              region: data.region || '未知',
               city: data.city || '未知',
               isp: data.org || '未知',
               timezone: data.timezone || '未知',
@@ -38,14 +87,11 @@ const IPInfo: React.FC = () => {
               longitude: data.longitude || 0,
               ipSource: 'ipapi.co (direct)'
             });
-            setDebugInfo(prev => prev + `Direct fetch from ipapi.co succeeded. IP: ${data.ip}. `);
             setLoading(false);
             return;
-          } else {
-            setDebugInfo(prev => prev + `Direct fetch from ipapi.co failed with status: ${response.status}. `);
           }
         } catch (e) {
-          setDebugInfo(prev => prev + `Direct fetch from ipapi.co error: ${e}. `);
+          // 忽略错误，继续尝试其他方法
         }
         
         // 尝试从 window.getUserIP 获取 IP
@@ -53,10 +99,8 @@ const IPInfo: React.FC = () => {
           try {
             ip = await (window as any).getUserIP();
             source = 'ipify API (direct)';
-            setDebugInfo(prev => prev + `getUserIP succeeded. IP: ${ip}. `);
           } catch (e) {
             console.warn('通过 getUserIP 获取 IP 失败:', e);
-            setDebugInfo(prev => prev + 'getUserIP failed. ');
           }
         }
         
@@ -66,16 +110,13 @@ const IPInfo: React.FC = () => {
             const ipResult = await IPService.getCurrentIP();
             ip = ipResult.ip;
             source = 'IPService';
-            setDebugInfo(prev => prev + `IPService succeeded. IP: ${ip}. `);
           } catch (e) {
             console.warn('通过 IPService 获取 IP 失败:', e);
-            setDebugInfo(prev => prev + 'IPService failed. ');
           }
         }
         
         // 如果仍然没有获取到 IP，则使用默认方法
         if (!ip) {
-          setDebugInfo(prev => prev + 'All methods failed, using default IPService.getIPInfo(). ');
           const info = await IPService.getIPInfo('');
           setIpInfo(info);
           setLoading(false);
@@ -88,15 +129,12 @@ const IPInfo: React.FC = () => {
         console.log('获取到的 IP 信息:', info);
       } catch (error) {
         console.error('获取IP信息失败:', error);
-        setDebugInfo(prev => prev + `Main fetch failed with error: ${error}. `);
         // 如果获取失败，尝试使用备用方法
         try {
           const info = await IPService.getIPInfo('127.0.0.1');
           setIpInfo(info);
-          setDebugInfo(prev => prev + 'Using fallback IP. ');
         } catch (fallbackError) {
           console.error('备用IP获取也失败:', fallbackError);
-          setDebugInfo(prev => prev + 'Fallback failed. ');
         }
       } finally {
         setLoading(false);
@@ -113,11 +151,6 @@ const IPInfo: React.FC = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           <span className="ml-3 text-gray-700 dark:text-gray-300">正在加载中...</span>
         </div>
-        {debugInfo && (
-          <div className="mt-4 p-2 bg-gray-100 dark:bg-gray-700 rounded text-xs text-gray-500 dark:text-gray-400">
-            <p>调试信息: {debugInfo}</p>
-          </div>
-        )}
       </div>
     );
   }
@@ -126,11 +159,6 @@ const IPInfo: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
         <p className="text-red-500 dark:text-red-400 text-center">无法获取IP信息</p>
-        {debugInfo && (
-          <div className="mt-4 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs text-gray-500 dark:text-gray-400">
-            <p>调试信息: {debugInfo}</p>
-          </div>
-        )}
       </div>
     );
   }
@@ -184,11 +212,6 @@ const IPInfo: React.FC = () => {
           </div>
         </div>
       </div>
-      {debugInfo && (
-        <div className="mt-4 p-2 bg-gray-100 dark:bg-gray-700 rounded text-xs text-gray-500 dark:text-gray-400">
-          <p>调试信息: {debugInfo}</p>
-        </div>
-      )}
     </div>
   );
 };
