@@ -34,4 +34,5 @@ export interface IPInfo {
   timezone: string;
   latitude: number;
   longitude: number;
+  ipSource?: string; // IP来源信息
 }

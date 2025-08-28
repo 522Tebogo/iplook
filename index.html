@@ -8,6 +8,35 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // 尝试获取用户真实IP地址
+      window.getUserIP = (function () {
+        var promise = new Promise(function (resolve, reject) {
+          var ipRegex = /(?:[0-9]{1,3}\.){3}[0-9]{1,3}/;
+          var request = new XMLHttpRequest();
+          request.open('GET', 'https://api.ipify.org/?format=json', true);
+          request.onload = function () {
+            if (request.status >= 200 && request.status < 300) {
+              try {
+                var data = JSON.parse(request.responseText);
+                resolve(data.ip);
+              } catch (e) {
+                reject(Error('JSON parse error'));
+              }
+            } else {
+              reject(Error(request.statusText));
+            }
+          };
+          request.onerror = function () {
+            reject(Error('Network error'));
+          };
+          request.send();
+        });
+        return function () {
+          return promise;
+        };
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
