@@ -67,6 +67,12 @@ export class IPService {
    * 获取当前IP地址
    */
   static async getCurrentIP(): Promise<{ ip: string }> {
+    // 首先尝试从 Cloudflare 头部获取真实IP（如果在 Cloudflare 环境中）
+    const cfConnectingIP = this.getCFConnectingIP();
+    if (cfConnectingIP) {
+      return { ip: cfConnectingIP };
+    }
+
     for (const apiUrl of this.IP_APIS) {
       try {
         const response = await axios.get(apiUrl, { 
@@ -105,6 +111,22 @@ export class IPService {
     
     console.error('所有IP API都失败了');
     throw new Error('无法获取当前IP地址');
+  }
+
+  /**
+   * 从 Cloudflare 请求头获取真实IP
+   */
+  private static getCFConnectingIP(): string | null {
+    // 在浏览器环境中无法直接访问请求头，但在部署环境中可能需要通过其他方式传递
+    // 这里仅作示意，实际部署时可能需要后端支持
+    if (typeof window !== 'undefined') {
+      // 尝试从全局变量或自定义属性中获取（需要后端配合设置）
+      const cfIP = (window as any).CF_IP;
+      if (cfIP && this.isValidIP(cfIP)) {
+        return cfIP;
+      }
+    }
+    return null;
   }
 
   /**

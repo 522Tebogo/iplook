@@ -2,7 +2,7 @@
 
 一个专业的网络检测平台，提供全面的IP信息查询和网络检测功能。
 
-![项目截图](/public/assets/project-screenshot.png)
+![项目截图](/public/project-screenshot.png)
 
 ## 功能特性
 
