@@ -153,34 +153,28 @@ export class IPService {
    */
   static async getIPInfo(ip: string): Promise<IPInfo> {
     try {
-      // 优先使用对国内用户友好的ip-api.com服务
-      const response = await axios.get(`http://ip-api.com/json/${ip}`, { 
+      // 使用 ipapi.co 获取详细信息（支持 CORS）
+      const response = await axios.get(`https://ipapi.co/${ip}/json/`, { 
         timeout: 8000,
         headers: {
           'Accept': 'application/json'
         }
       });
       const data = response.data;
-      
-      // 检查响应数据是否有效
-      if (!data || data.status === 'fail') {
-        throw new Error('API返回失败状态');
-      }
-      
+
       return {
-        ip: data.query,
-        country: this.addCountryEmoji(data.country || '未知', data.countryCode || 'UN'),
-        countryCode: data.countryCode || '未知',
-        region: data.regionName || '未知',
+        ip: data.ip,
+        country: this.addCountryEmoji(data.country_name || '未知', data.country_code || 'UN'),
+        countryCode: data.country_code || '未知',
+        region: data.region_name || '未知',
         city: data.city || '未知',
-        isp: data.isp || '未知',
+        isp: data.org || '未知',
         timezone: data.timezone || '未知',
-        latitude: data.lat || 0,
-        longitude: data.lon || 0,
+        latitude: data.latitude || 0,
+        longitude: data.longitude || 0,
       };
     } catch (error) {
       console.error('主API获取IP信息失败:', error);
-      // 返回模拟数据以确保应用仍然可以工作
       return this.getMockIPInfo(ip);
     }
   }

@@ -17,13 +17,13 @@ const IPInfo: React.FC = () => {
         
         // 直接通过 ipapi.com 获取 IP 和信息（绕过可能的代理问题）
         try {
-          const response = await fetch('https://ipapi.com/json/', {
+          const response = await fetch('https://ipapi.co/json/', { // ✅ 使用 ipapi.co 支持 CORS
             method: 'GET',
             headers: {
               'Accept': 'application/json'
             }
           });
-          
+
           if (response.ok) {
             const data = await response.json();
             setIpInfo({
@@ -36,16 +36,16 @@ const IPInfo: React.FC = () => {
               timezone: data.timezone || '未知',
               latitude: data.latitude || 0,
               longitude: data.longitude || 0,
-              ipSource: 'ipapi.com (direct)'
+              ipSource: 'ipapi.co (direct)'
             });
-            setDebugInfo(prev => prev + `Direct fetch from ipapi.com succeeded. IP: ${data.ip}. `);
+            setDebugInfo(prev => prev + `Direct fetch from ipapi.co succeeded. IP: ${data.ip}. `);
             setLoading(false);
             return;
           } else {
-            setDebugInfo(prev => prev + `Direct fetch from ipapi.com failed with status: ${response.status}. `);
+            setDebugInfo(prev => prev + `Direct fetch from ipapi.co failed with status: ${response.status}. `);
           }
         } catch (e) {
-          setDebugInfo(prev => prev + `Direct fetch from ipapi.com error: ${e}. `);
+          setDebugInfo(prev => prev + `Direct fetch from ipapi.co error: ${e}. `);
         }
         
         // 尝试从 window.getUserIP 获取 IP
