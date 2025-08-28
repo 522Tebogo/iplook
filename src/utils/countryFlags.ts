@@ -53,8 +53,14 @@ export const countryFlags: { [key: string]: string } = {
   'Bhutan': '🇧🇹',
   'North Korea': '🇰🇵',
   'Hong Kong': '🇭🇰',
+  'Hong Kong SAR': '🇭🇰',
+  'Hong Kong SAR, China': '🇭🇰',
   'Taiwan': '🇹🇼',
+  'Taiwan, Province of China': '🇹🇼',
+  'Taiwan (Republic of China)': '🇹🇼',
   'Macau': '🇲🇴',
+  'Macao SAR': '🇲🇴',
+  'Macao SAR, China': '🇲🇴',
   'Georgia': '🇬🇪',
   'Armenia': '🇦🇲',
   'Azerbaijan': '🇦🇿',
@@ -63,11 +69,16 @@ export const countryFlags: { [key: string]: string } = {
   
   // 欧洲国家
   'United Kingdom': '🇬🇧',
+  'UK': '🇬🇧',
+  'Great Britain': '🇬🇧',
+  'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+  'Britain': '🇬🇧',
   'France': '🇫🇷',
   'Germany': '🇩🇪',
   'Italy': '🇮🇹',
   'Spain': '🇪🇸',
   'Russia': '🇷🇺',
+  'Russian Federation': '🇷🇺',
   'Netherlands': '🇳🇱',
   'Sweden': '🇸🇪',
   'Switzerland': '🇨🇭',
@@ -115,12 +126,17 @@ export const countryFlags: { [key: string]: string } = {
   'Moldova': '🇲🇩',
   'Moldova, Republic of': '🇲🇩',
   'Republic of Moldova': '🇲🇩',
+  'Kosovo': '🇽🇰',
+  'Kosovo*': '🇽🇰',
+  'Republic of Kosovo': '🇽🇰',
+  'Kosovo, Republic of': '🇽🇰',
   
   // 北美洲国家
   'United States': '🇺🇸',
   'USA': '🇺🇸',
   'United States of America': '🇺🇸',
   'America': '🇺🇸',
+  'US': '🇺🇸',
   'Canada': '🇨🇦',
   'Mexico': '🇲🇽',
   'Guatemala': '🇬🇹',
@@ -131,6 +147,7 @@ export const countryFlags: { [key: string]: string } = {
   'Costa Rica': '🇨🇷',
   'Panama': '🇵🇦',
   'Bahamas': '🇧🇸',
+  'The Bahamas': '🇧🇸',
   'Cuba': '🇨🇺',
   'Jamaica': '🇯🇲',
   'Haiti': '🇭🇹',
@@ -396,11 +413,7 @@ export const countryFlags: { [key: string]: string } = {
   'British Antarctic': '🇦🇶',
   'Antarctica': '🇦🇶',
   'Antarctic': '🇦🇶',
-  'Kosovo': '🇽🇰',
-  'Kosovo*': '🇽🇰',
-  'Republic of Kosovo': '🇽🇰',
-  'Kosovo, Republic of': '🇽🇰',
-
+  
   '_unknown': '🏳'
 };
 
