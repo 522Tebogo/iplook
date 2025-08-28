@@ -85,7 +85,7 @@ export class DnsLeakService {
       const detectedDnsServers = dnsData ? dnsData.servers : await this.detectDnsServers();
       
       // 分析DNS泄露情况
-      const analysis = this.analyzeDnsLeak(detectedDnsServers, dnsData);
+      const analysis = this.analyzeDnsLeak(detectedDnsServers, dnsData || undefined);
       
       const result = {
         isLeaking: analysis.isLeaking,

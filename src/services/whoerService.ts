@@ -77,8 +77,8 @@ export class WhoerService {
         console.warn('外部隐私检测API调用失败，使用本地检测:', error);
       }
       
-      // 基于IP地址进行检测
-      const analysis = this.analyzePrivacy(ip, externalData);
+      // 分析隐私保护情况
+      const analysis = this.analyzePrivacy(ip, externalData || undefined);
       
       const result = {
         ip,
