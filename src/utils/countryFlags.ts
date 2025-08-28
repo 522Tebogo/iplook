@@ -418,5 +418,6 @@ export const countryFlags: { [key: string]: string } = {
 };
 
 export const getCountryFlag = (country: string): string => {
-  return countryFlags[country] || countryFlags['_unknown'];
+  const mainCountry = country.split(',')[0].trim();
+  return countryFlags[mainCountry] || countryFlags['_unknown'];
 };
